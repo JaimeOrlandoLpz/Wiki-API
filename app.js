@@ -26,16 +26,46 @@ mongoose.connect("mongodb://localhost:27017/wikiDB");
 
 // Defining Article Schema and Model for DB
 const articleSchema = {
-  title: String,
-  content: String
+    title: String,
+    content: String
 };
 
 const Article = mongoose.model("Article", articleSchema);
 
-app.get("/", (req, res) => {
+app.get("/articles", (req, res) => {
+    Article.find((err, foundArticles) => {
+        if(!err){
+            res.send(foundArticles);// Send Results to Client
+        }
 
+    });
 })
 
+app.post("/articles", (req, res)=>{
+    const newArticle = new Article({
+        title: req.body.title,
+        content: req.body.content
+    });
+
+    newArticle.save((err)=>{
+        if(!err){
+            res.send("Glory to Mankind");
+        }
+
+        else{
+            res.send("Glory to the Machine Lifeforms");
+        }
+    });
+});
+
+app.delete("/articles", (req, res) =>{
+    Article.deleteMany((err)=>{
+        if(!err){
+            res.send("This is humanity in its truest form");
+        }
+    });
+});
+
 app.listen(3000, () => {
-  console.log("Server started on port 3000");
+    console.log("Server started on port 3000");
 });
