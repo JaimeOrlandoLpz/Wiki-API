@@ -67,7 +67,7 @@ app.route("/articles")
 });
 
 app.route("/articles/:articleTitle").
-get((req, res)=>{
+    get((req, res)=>{
     const articleTitle = req.params.articleTitle;
     Article.findOne({title: articleTitle}, (err, foundArticle)=>{
         if(foundArticle) {
@@ -78,7 +78,18 @@ get((req, res)=>{
             res.send("<h1>No Such Article</h1>");
         }
     })
-});
+})
+    .put((req, res)=>{
+        Article.updateOne({title: req.params.articleTitle},
+            {$set: {title: req.body.title, content: req.body.content}}, {overwrite: true}, (err)=>{
+                if(!err){
+                    res.send("Article Updated");
+                }
+                else{
+                    res.send("Something's Wrong Sis");
+                }
+            })
+    });
 
 
 app.listen(3000, () => {
