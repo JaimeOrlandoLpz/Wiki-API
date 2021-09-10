@@ -79,9 +79,22 @@ app.route("/articles/:articleTitle").
         }
     })
 })
+    // PUT IS MEANT TO OVERWRITE THE ENTIRE ELEMENT
     .put((req, res)=>{
         Article.updateOne({title: req.params.articleTitle},
             {$set: {title: req.body.title, content: req.body.content}}, {overwrite: true}, (err)=>{
+                if(!err){
+                    res.send("Article Updated");
+                }
+                else{
+                    res.send("Something's Wrong Sis");
+                }
+            })
+    })
+    // Update only the provided field
+    .patch((req, res)=>{
+        Article.updateOne({title: req.params.articleTitle},
+            {$set: req.body}, (err)=>{
                 if(!err){
                     res.send("Article Updated");
                 }
