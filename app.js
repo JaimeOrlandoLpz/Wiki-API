@@ -32,7 +32,9 @@ const articleSchema = {
 
 const Article = mongoose.model("Article", articleSchema);
 
-app.get("/articles", (req, res) => {
+// Check what type of method was called
+app.route("/articles")
+    .get((req, res) => {
     Article.find((err, foundArticles) => {
         if(!err){
             res.send(foundArticles);// Send Results to Client
@@ -40,8 +42,7 @@ app.get("/articles", (req, res) => {
 
     });
 })
-
-app.post("/articles", (req, res)=>{
+    .post((req, res)=>{
     const newArticle = new Article({
         title: req.body.title,
         content: req.body.content
@@ -56,15 +57,29 @@ app.post("/articles", (req, res)=>{
             res.send("Glory to the Machine Lifeforms");
         }
     });
-});
-
-app.delete("/articles", (req, res) =>{
+})
+    .delete((req, res) =>{
     Article.deleteMany((err)=>{
         if(!err){
             res.send("This is humanity in its truest form");
         }
     });
 });
+
+app.route("/articles/:articleTitle").
+get((req, res)=>{
+    const articleTitle = req.params.articleTitle;
+    Article.findOne({title: articleTitle}, (err, foundArticle)=>{
+        if(foundArticle) {
+            res.send(foundArticle);
+        }
+
+        else{
+            res.send("<h1>No Such Article</h1>");
+        }
+    })
+});
+
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");
