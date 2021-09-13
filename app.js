@@ -102,6 +102,14 @@ app.route("/articles/:articleTitle").
                     res.send("Something's Wrong Sis");
                 }
             })
+    })
+    .delete((req, res)=>{
+        const title = req.params.articleTitle;
+        Article.deleteOne({title: title}, (err) =>{
+            if(!err){
+                res.send(`Deleted article with title ${title} `);
+            }
+        })
     });
 
 
